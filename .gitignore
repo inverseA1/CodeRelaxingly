@@ -1,0 +1,26 @@
+# Build directories
+bin/
+obj/
+
+# Compiled object files
+*.obj
+*.o
+
+# Debug databases
+*.pdb
+*.ilk
+
+# Executable files
+*.exe
+
+# Visual Studio cache/options directories
+.vs/
+
+# Other build artifacts
+*.a
+*.lib
+*.so
+*.dylib
+*.dll
+
+# IDE settings (keep .vscode configs)
