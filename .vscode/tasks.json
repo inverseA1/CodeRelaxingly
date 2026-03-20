@@ -1,28 +1,57 @@
 {
-    "tasks": [
-        {
-            "type": "cppbuild",
-            "label": "C/C++: cl.exe 生成活动文件",
-            "command": "cl.exe",
-            "args": [
-                "/Zi",
-                "/EHsc",
-                "/nologo",
-                "/Fe${fileDirname}\\${fileBasenameNoExtension}.exe",
-                "${file}"
-            ],
-            "options": {
-                "cwd": "${fileDirname}"
-            },
-            "problemMatcher": [
-                "$msCompile"
-            ],
-            "group": {
-                "kind": "build",
-                "isDefault": true
-            },
-            "detail": "调试器生成的任务。"
-        }
-    ],
-    "version": "2.0.0"
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "clean",
+      "type": "shell",
+      "command": "powershell",
+      "args": [
+        "-NoProfile",
+        "-Command",
+        "Remove-Item -Recurse -Force '${workspaceFolder}\\bin','${workspaceFolder}\\obj','${workspaceFolder}\\*.obj','${workspaceFolder}\\*.pdb','${workspaceFolder}\\*.ilk' -ErrorAction SilentlyContinue; New-Item -ItemType Directory -Force -Path '${workspaceFolder}\\bin' | Out-Null; New-Item -ItemType Directory -Force -Path '${workspaceFolder}\\obj' | Out-Null"
+      ],
+      "problemMatcher": []
+    },
+    {
+      "label": "build",
+      "type": "shell",
+      "command": "powershell",
+      "args": [
+        "-NoProfile",
+        "-Command",
+        "cd '${workspaceFolder}'; if (-Not (Test-Path 'obj')) { New-Item -ItemType Directory -Path 'obj' | Out-Null }; if (-Not (Test-Path 'bin')) { New-Item -ItemType Directory -Path 'bin' | Out-Null }; cl.exe /EHsc /Fo:obj\\${fileBasenameNoExtension}.obj /Fd:obj\\${fileBasenameNoExtension}.pdb /Fe:bin\\${fileBasenameNoExtension}.exe '${file}'"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "dependsOn": "clean",
+      "problemMatcher": [
+        "$msCompile"
+      ]
+    },
+    {
+      "label": "run",
+      "type": "shell",
+      "command": "powershell",
+      "args": [
+        "-NoProfile",
+        "-Command",
+        "cd '${workspaceFolder}'; if (-Not (Test-Path 'obj')) { New-Item -ItemType Directory -Path 'obj' | Out-Null }; if (-Not (Test-Path 'bin')) { New-Item -ItemType Directory -Path 'bin' | Out-Null }; cl.exe /EHsc /Fo:obj\\${fileBasenameNoExtension}.obj /Fd:obj\\${fileBasenameNoExtension}.pdb /Fe:bin\\${fileBasenameNoExtension}.exe '${file}' && .\\bin\\${fileBasenameNoExtension}.exe; Remove-Item -Recurse -Force 'bin','obj','*.obj','*.pdb','*.ilk' -ErrorAction SilentlyContinue"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "group": {
+        "kind": "test",
+        "isDefault": false
+      },
+      "problemMatcher": [
+        "$msCompile"
+      ]
+    }
+  ]
 }
