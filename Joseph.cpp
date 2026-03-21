@@ -27,15 +27,15 @@ void Eliminate(int* count, char* circle, int point) {
 void SolveJoseph(char* circle, const int n, const int papandom, const int step, bool (*shouldEliminate)(int, int)) {
     int count = 0, call = 1, point = 0;//初始化扔下去的人数、当前报数、报数者
     do {
-        while (circle[point] == '+') {
-            point = (++point) % n;
-        }//被扔的人不会报数
 
         if (shouldEliminate(call, step)) /*报数为step的倍数的人*/ {
             Eliminate(&count, circle, point);
         }
 
-        point = (++point) % n;//下一个
+        do{
+        point = (++point) % n;//下一个，被扔的人不会报数
+        }while (circle[point] == '+');
+
         call++;//报数
     } while (count < papandom);//扔足够多的人
 }
