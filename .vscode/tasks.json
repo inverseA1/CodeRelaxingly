@@ -8,30 +8,28 @@
       "args": [
         "-NoProfile",
         "-Command",
-        "Remove-Item -Recurse -Force '${workspaceFolder}\\bin','${workspaceFolder}\\obj','${workspaceFolder}\\*.obj','${workspaceFolder}\\*.pdb','${workspaceFolder}\\*.ilk' -ErrorAction SilentlyContinue; New-Item -ItemType Directory -Force -Path '${workspaceFolder}\\bin' | Out-Null; New-Item -ItemType Directory -Force -Path '${workspaceFolder}\\obj' | Out-Null"
+        "Remove-Item -Recurse -Force '${workspaceFolder}\\bin','${workspaceFolder}\\obj' -ErrorAction SilentlyContinue; New-Item -ItemType Directory -Force -Path '${workspaceFolder}\\bin' | Out-Null; New-Item -ItemType Directory -Force -Path '${workspaceFolder}\\obj' | Out-Null"
       ],
       "problemMatcher": []
     },
     {
-      "label": "build",
+      "label": "compile",
       "type": "shell",
       "command": "powershell",
       "args": [
         "-NoProfile",
         "-Command",
-        "cd '${workspaceFolder}'; if (-Not (Test-Path 'obj')) { New-Item -ItemType Directory -Path 'obj' | Out-Null }; if (-Not (Test-Path 'bin')) { New-Item -ItemType Directory -Path 'bin' | Out-Null }; cl.exe /EHsc /Fo:obj\\${fileBasenameNoExtension}.obj /Fd:obj\\${fileBasenameNoExtension}.pdb /Fe:bin\\${fileBasenameNoExtension}.exe '${file}'"
+        "cd '${workspaceFolder}'; cl.exe /EHsc /Zi /Od /Fo:obj\\${fileBasenameNoExtension}.obj /Fd:obj\\${fileBasenameNoExtension}.pdb /Fe:bin\\${fileBasenameNoExtension}.exe '${file}' /link /PDB:obj\\${fileBasenameNoExtension}.pdb"
       ],
       "options": {
         "cwd": "${workspaceFolder}"
       },
+      "dependsOn": "clean",
       "group": {
         "kind": "build",
         "isDefault": true
       },
-      "dependsOn": "clean",
-      "problemMatcher": [
-        "$msCompile"
-      ]
+      "problemMatcher": ["$msCompile"]
     },
     {
       "label": "run",
@@ -40,18 +38,17 @@
       "args": [
         "-NoProfile",
         "-Command",
-        "cd '${workspaceFolder}'; if (-Not (Test-Path 'obj')) { New-Item -ItemType Directory -Path 'obj' | Out-Null }; if (-Not (Test-Path 'bin')) { New-Item -ItemType Directory -Path 'bin' | Out-Null }; cl.exe /EHsc /Fo:obj\\${fileBasenameNoExtension}.obj /Fd:obj\\${fileBasenameNoExtension}.pdb /Fe:bin\\${fileBasenameNoExtension}.exe '${file}' && .\\bin\\${fileBasenameNoExtension}.exe; Remove-Item -Recurse -Force 'bin','obj','*.obj','*.pdb','*.ilk' -ErrorAction SilentlyContinue"
+        "if (Test-Path 'bin\\${fileBasenameNoExtension}.exe') { & 'bin\\${fileBasenameNoExtension}.exe' } else { Write-Host 'Executable not found. Please run compile first.' }"
       ],
       "options": {
         "cwd": "${workspaceFolder}"
       },
+      "dependsOn": "compile",
       "group": {
         "kind": "test",
         "isDefault": false
       },
-      "problemMatcher": [
-        "$msCompile"
-      ]
+      "problemMatcher": []
     }
   ]
 }
