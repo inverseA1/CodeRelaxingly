@@ -1,13 +1,17 @@
-#ifndef _JOSEPF_WITH_CLASS_
-#define _JOSEPF_WITH_CLASS_
+﻿#ifndef _JOSEPH_WITH_CLASS_
+#define _JOSEPH_WITH_CLASS_
 
 #include <iostream>
 #include <vector>
-using namespace std;
 
 class JOSEPH{
     public:
-        void Get_circle(vector<char> circle){ this->circle = circle; }
+        JOSEPH(const std::vector<char>& circle, int papandom, int step)
+        : circle(circle), papandom(papandom), step(step) {}
+
+        JOSEPH() = default;
+
+        void Get_circle(const std::vector<char>& circle){ this->circle = circle; }
         void Get_papandom(int papandom){ this->papandom = papandom; }
         void Get_step(int step){ this->step = step; }
 
@@ -18,28 +22,30 @@ class JOSEPH{
         }
 
         void Solve_Joseph(){
-            int n = this->circle.size(), count = 0, call = 1, point = 0;//初始化总人数，已经扔下去的人数、当前报数、报数者
+            int len = this->circle.size(), count = 0, call = 1, point = 0;//初始化总人数，已经扔下去的人数、当前报数、报数者
             do {
-                if (this->OriginalJoseph(call)) /*报数为step的倍数的人*/ {
+                if (this->OriginalJoseph(call)){/*报数为step的倍数的人*/
                     this->Eliminate(count, point);
                 }
+
                 do{
-                point = (++point) % n;//下一个，被扔的人不会报数
+                point = (++point) % len;//下一个，被扔的人不会报数
                 }while (this->circle[point] == '+');
 
                 call++;//报数
-            } while (count < this->papandom);//扔足够多的人
+            }while(count < this->papandom);//扔足够多的人
         }
 
         void Print_Joseph(){
-            for (int i = 0; i < 30; i++) {
-                cout<< this->circle[i] << " ";
+            int len = this->circle.size();
+            for (int i = 0; i < len; i++) {
+                std::cout<< this->circle[i] << ' ';
             }
-            cout<<endl;
+            std::cout<<std::endl;
         }
 
     private:
-        vector<char> circle;
+        std::vector<char> circle;
         int papandom;
         int step;
 
