@@ -22,18 +22,18 @@ class JOSEPH{
         }
 
         void Solve_Joseph(){
-            int len = this->circle.size(), count = 0, call = 1, point = 0;//初始化总人数，已经扔下去的人数、当前报数、报数者
+            int len = this->circle.size(), count = 0, call = 1, point = 0;
             do {
-                if (this->OriginalJoseph(call)){/*报数为step的倍数的人*/
+                if (this->OriginalJoseph(call)){
                     this->Eliminate(count, point);
                 }
 
                 do{
-                point = (++point) % len;//下一个，被扔的人不会报数
+                point = (++point) % len;
                 }while (this->circle[point] == '+');
 
-                call++;//报数
-            }while(count < this->papandom);//扔足够多的人
+                call++;
+            }while(count < this->papandom);
         }
 
         void Print_Joseph(){
@@ -49,10 +49,7 @@ class JOSEPH{
         int papandom;
         int step;
 
-        //原始约瑟夫问题：第step个人要扔下去
         bool OriginalJoseph(int call) { return call % this->step == 0; }
-        //新约瑟夫问题：报数中包含有step的人要扔下去
-        //注：要求step为1~9
         bool NewJoseph(int call) {
             if (call < 0) call = -call;
             do {
@@ -62,8 +59,8 @@ class JOSEPH{
             return false;
         }
         void Eliminate(int& count, int point) {
-            count++;//有人要倒霉了
-            this->circle[point] = '+';//是异端！
+            count++;
+            this->circle[point] = '+';
         }
 };
 
