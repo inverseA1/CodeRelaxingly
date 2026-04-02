@@ -1,0 +1,323 @@
+[{
+	"resource": "/f:/CodeRelaxingly/CodeRelaxingly/EightQueensTask5.cpp",
+	"owner": "C/C++: IntelliSense",
+	"code": "304",
+	"severity": 8,
+	"message": "没有与参数列表匹配的 重载函数 \"settextstyle\" 实例",
+	"source": "C/C++",
+	"startLineNumber": 201,
+	"startColumn": 13,
+	"endLineNumber": 201,
+	"endColumn": 25,
+	"relatedInformation": [
+		{
+			"startLineNumber": 201,
+			"startColumn": 13,
+			"endLineNumber": 201,
+			"endColumn": 25,
+			"message": "参数类型为:  (int, int, const char [6])",
+			"resource": "/f:/CodeRelaxingly/CodeRelaxingly/EightQueensTask5.cpp"
+		}
+	],
+	"modelVersionId": 1,
+	"origin": "extHost2"
+},{
+	"resource": "/f:/CodeRelaxingly/CodeRelaxingly/EightQueensTask5.cpp",
+	"owner": "C/C++: IntelliSense",
+	"code": "304",
+	"severity": 8,
+	"message": "没有与参数列表匹配的 重载函数 \"outtextxy\" 实例",
+	"source": "C/C++",
+	"startLineNumber": 203,
+	"startColumn": 13,
+	"endLineNumber": 203,
+	"endColumn": 22,
+	"relatedInformation": [
+		{
+			"startLineNumber": 203,
+			"startColumn": 13,
+			"endLineNumber": 203,
+			"endColumn": 22,
+			"message": "参数类型为:  (int, int, char [2])",
+			"resource": "/f:/CodeRelaxingly/CodeRelaxingly/EightQueensTask5.cpp"
+		}
+	],
+	"modelVersionId": 1,
+	"origin": "extHost2"
+},{
+	"resource": "/f:/CodeRelaxingly/CodeRelaxingly/EightQueensTask5.cpp",
+	"owner": "C/C++: IntelliSense",
+	"code": "304",
+	"severity": 8,
+	"message": "没有与参数列表匹配的 重载函数 \"settextstyle\" 实例",
+	"source": "C/C++",
+	"startLineNumber": 218,
+	"startColumn": 9,
+	"endLineNumber": 218,
+	"endColumn": 21,
+	"relatedInformation": [
+		{
+			"startLineNumber": 218,
+			"startColumn": 9,
+			"endLineNumber": 218,
+			"endColumn": 21,
+			"message": "参数类型为:  (int, int, const char [16])",
+			"resource": "/f:/CodeRelaxingly/CodeRelaxingly/EightQueensTask5.cpp"
+		}
+	],
+	"modelVersionId": 1,
+	"origin": "extHost2"
+},{
+	"resource": "/f:/CodeRelaxingly/CodeRelaxingly/EightQueensTask5.cpp",
+	"owner": "C/C++: IntelliSense",
+	"code": "304",
+	"severity": 8,
+	"message": "没有与参数列表匹配的 重载函数 \"outtextxy\" 实例",
+	"source": "C/C++",
+	"startLineNumber": 219,
+	"startColumn": 9,
+	"endLineNumber": 219,
+	"endColumn": 18,
+	"relatedInformation": [
+		{
+			"startLineNumber": 219,
+			"startColumn": 9,
+			"endLineNumber": 219,
+			"endColumn": 18,
+			"message": "参数类型为:  (int, int, const char [16])",
+			"resource": "/f:/CodeRelaxingly/CodeRelaxingly/EightQueensTask5.cpp"
+		}
+	],
+	"modelVersionId": 1,
+	"origin": "extHost2"
+},{
+	"resource": "/f:/CodeRelaxingly/CodeRelaxingly/EightQueensTask5.cpp",
+	"owner": "C/C++: IntelliSense",
+	"code": "304",
+	"severity": 8,
+	"message": "没有与参数列表匹配的 重载函数 \"settextstyle\" 实例",
+	"source": "C/C++",
+	"startLineNumber": 224,
+	"startColumn": 9,
+	"endLineNumber": 224,
+	"endColumn": 21,
+	"relatedInformation": [
+		{
+			"startLineNumber": 224,
+			"startColumn": 9,
+			"endLineNumber": 224,
+			"endColumn": 21,
+			"message": "参数类型为:  (int, int, const char [16])",
+			"resource": "/f:/CodeRelaxingly/CodeRelaxingly/EightQueensTask5.cpp"
+		}
+	],
+	"modelVersionId": 1,
+	"origin": "extHost2"
+},{
+	"resource": "/f:/CodeRelaxingly/CodeRelaxingly/EightQueensTask5.cpp",
+	"owner": "C/C++: IntelliSense",
+	"code": "304",
+	"severity": 8,
+	"message": "没有与参数列表匹配的 重载函数 \"outtextxy\" 实例",
+	"source": "C/C++",
+	"startLineNumber": 225,
+	"startColumn": 9,
+	"endLineNumber": 225,
+	"endColumn": 18,
+	"relatedInformation": [
+		{
+			"startLineNumber": 225,
+			"startColumn": 9,
+			"endLineNumber": 225,
+			"endColumn": 18,
+			"message": "参数类型为:  (int, int, char [100])",
+			"resource": "/f:/CodeRelaxingly/CodeRelaxingly/EightQueensTask5.cpp"
+		}
+	],
+	"modelVersionId": 1,
+	"origin": "extHost2"
+},{
+	"resource": "/f:/CodeRelaxingly/CodeRelaxingly/EightQueensTask5.cpp",
+	"owner": "C/C++: IntelliSense",
+	"code": "304",
+	"severity": 8,
+	"message": "没有与参数列表匹配的 重载函数 \"outtextxy\" 实例",
+	"source": "C/C++",
+	"startLineNumber": 228,
+	"startColumn": 9,
+	"endLineNumber": 228,
+	"endColumn": 18,
+	"relatedInformation": [
+		{
+			"startLineNumber": 228,
+			"startColumn": 9,
+			"endLineNumber": 228,
+			"endColumn": 18,
+			"message": "参数类型为:  (int, int, char [100])",
+			"resource": "/f:/CodeRelaxingly/CodeRelaxingly/EightQueensTask5.cpp"
+		}
+	],
+	"modelVersionId": 1,
+	"origin": "extHost2"
+},{
+	"resource": "/f:/CodeRelaxingly/CodeRelaxingly/EightQueensTask5.cpp",
+	"owner": "C/C++: IntelliSense",
+	"code": "304",
+	"severity": 8,
+	"message": "没有与参数列表匹配的 重载函数 \"settextstyle\" 实例",
+	"source": "C/C++",
+	"startLineNumber": 232,
+	"startColumn": 9,
+	"endLineNumber": 232,
+	"endColumn": 21,
+	"relatedInformation": [
+		{
+			"startLineNumber": 232,
+			"startColumn": 9,
+			"endLineNumber": 232,
+			"endColumn": 21,
+			"message": "参数类型为:  (int, int, const char [16])",
+			"resource": "/f:/CodeRelaxingly/CodeRelaxingly/EightQueensTask5.cpp"
+		}
+	],
+	"modelVersionId": 1,
+	"origin": "extHost2"
+},{
+	"resource": "/f:/CodeRelaxingly/CodeRelaxingly/EightQueensTask5.cpp",
+	"owner": "C/C++: IntelliSense",
+	"code": "304",
+	"severity": 8,
+	"message": "没有与参数列表匹配的 重载函数 \"outtextxy\" 实例",
+	"source": "C/C++",
+	"startLineNumber": 233,
+	"startColumn": 9,
+	"endLineNumber": 233,
+	"endColumn": 18,
+	"relatedInformation": [
+		{
+			"startLineNumber": 233,
+			"startColumn": 9,
+			"endLineNumber": 233,
+			"endColumn": 18,
+			"message": "参数类型为:  (int, int, const char [34])",
+			"resource": "/f:/CodeRelaxingly/CodeRelaxingly/EightQueensTask5.cpp"
+		}
+	],
+	"modelVersionId": 1,
+	"origin": "extHost2"
+},{
+	"resource": "/f:/CodeRelaxingly/CodeRelaxingly/EightQueensTask5.cpp",
+	"owner": "C/C++: IntelliSense",
+	"code": "304",
+	"severity": 8,
+	"message": "没有与参数列表匹配的 重载函数 \"outtextxy\" 实例",
+	"source": "C/C++",
+	"startLineNumber": 234,
+	"startColumn": 9,
+	"endLineNumber": 234,
+	"endColumn": 18,
+	"relatedInformation": [
+		{
+			"startLineNumber": 234,
+			"startColumn": 9,
+			"endLineNumber": 234,
+			"endColumn": 18,
+			"message": "参数类型为:  (int, int, const char [17])",
+			"resource": "/f:/CodeRelaxingly/CodeRelaxingly/EightQueensTask5.cpp"
+		}
+	],
+	"modelVersionId": 1,
+	"origin": "extHost2"
+},{
+	"resource": "/f:/CodeRelaxingly/CodeRelaxingly/EightQueensTask5.cpp",
+	"owner": "C/C++: IntelliSense",
+	"code": "304",
+	"severity": 8,
+	"message": "没有与参数列表匹配的 重载函数 \"settextstyle\" 实例",
+	"source": "C/C++",
+	"startLineNumber": 246,
+	"startColumn": 9,
+	"endLineNumber": 246,
+	"endColumn": 21,
+	"relatedInformation": [
+		{
+			"startLineNumber": 246,
+			"startColumn": 9,
+			"endLineNumber": 246,
+			"endColumn": 21,
+			"message": "参数类型为:  (int, int, const char [16])",
+			"resource": "/f:/CodeRelaxingly/CodeRelaxingly/EightQueensTask5.cpp"
+		}
+	],
+	"modelVersionId": 1,
+	"origin": "extHost2"
+},{
+	"resource": "/f:/CodeRelaxingly/CodeRelaxingly/EightQueensTask5.cpp",
+	"owner": "C/C++: IntelliSense",
+	"code": "304",
+	"severity": 8,
+	"message": "没有与参数列表匹配的 重载函数 \"outtextxy\" 实例",
+	"source": "C/C++",
+	"startLineNumber": 247,
+	"startColumn": 9,
+	"endLineNumber": 247,
+	"endColumn": 18,
+	"relatedInformation": [
+		{
+			"startLineNumber": 247,
+			"startColumn": 9,
+			"endLineNumber": 247,
+			"endColumn": 18,
+			"message": "参数类型为:  (int, int, const char [14])",
+			"resource": "/f:/CodeRelaxingly/CodeRelaxingly/EightQueensTask5.cpp"
+		}
+	],
+	"modelVersionId": 1,
+	"origin": "extHost2"
+},{
+	"resource": "/f:/CodeRelaxingly/CodeRelaxingly/EightQueensTask5.cpp",
+	"owner": "C/C++: IntelliSense",
+	"code": "304",
+	"severity": 8,
+	"message": "没有与参数列表匹配的 重载函数 \"outtextxy\" 实例",
+	"source": "C/C++",
+	"startLineNumber": 248,
+	"startColumn": 9,
+	"endLineNumber": 248,
+	"endColumn": 18,
+	"relatedInformation": [
+		{
+			"startLineNumber": 248,
+			"startColumn": 9,
+			"endLineNumber": 248,
+			"endColumn": 18,
+			"message": "参数类型为:  (int, int, const char [24])",
+			"resource": "/f:/CodeRelaxingly/CodeRelaxingly/EightQueensTask5.cpp"
+		}
+	],
+	"modelVersionId": 1,
+	"origin": "extHost2"
+},{
+	"resource": "/f:/CodeRelaxingly/CodeRelaxingly/EightQueensTask5.cpp",
+	"owner": "C/C++: IntelliSense",
+	"code": "304",
+	"severity": 8,
+	"message": "没有与参数列表匹配的 重载函数 \"outtextxy\" 实例",
+	"source": "C/C++",
+	"startLineNumber": 249,
+	"startColumn": 9,
+	"endLineNumber": 249,
+	"endColumn": 18,
+	"relatedInformation": [
+		{
+			"startLineNumber": 249,
+			"startColumn": 9,
+			"endLineNumber": 249,
+			"endColumn": 18,
+			"message": "参数类型为:  (int, int, const char [13])",
+			"resource": "/f:/CodeRelaxingly/CodeRelaxingly/EightQueensTask5.cpp"
+		}
+	],
+	"modelVersionId": 1,
+	"origin": "extHost2"
+}]
