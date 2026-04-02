@@ -24,3 +24,13 @@ obj/
 *.dll
 
 # IDE settings (keep .vscode configs)
+
+# MCP server configs (may contain API keys)
+.vscode/.mcp.json
+
+# Claude Code settings (may contain API keys)
+.claude.json
+
+# User-level Claude settings (may contain API keys)
+# Uncomment if you clone this repo to another machine:
+# settings.json
