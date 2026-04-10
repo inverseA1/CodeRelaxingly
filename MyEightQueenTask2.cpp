@@ -33,34 +33,32 @@ void PrintBoard(int* board){
 }
 
 // 递归回溯
-bool SolveNQueensRecursive(int* board, int row){
-    //调用到这一行了，如果这行还没放皇后，就要从第一列开始尝试，也就是从-1到0，如果放了，说明这里皇后位置不对，也要+1
-    if(board[row] == BOARD_SIZE-1){
-        //这一行由于之前行不正确而不能再放了，尝试之前行，凡是尝试之前行，都要重置这一行
-        board[row] = -1;
-        return SolveNQueensRecursive(board, row-1);
-    }else{
-        board[row]++;//这一行能放，就放
+bool SolveNQueensRecursive(int* board, int row) {
+    // 边界安全：回溯到第0行之前表示无解
+    if (row < 0) {
+        return false;
     }
 
-    //检查皇后放在改行该列是否安全
-    if(IsSafe(board, row)){
-        //安全
-        if(row == BOARD_SIZE-1){
-            return true;//最后一行，求解完成，退出
-        }else {
-            //下一行
-            return SolveNQueensRecursive(board, row +1);
+    // 如果当前行还没开始尝试，board[row] == -1；尝试下一列即 board[row]++
+    // 如果当前行已经尝试过某些列，board[row] 指向当前列，继续尝试下一列
+    board[row]++;
+
+    // 如果当前行所有列都试完了（注意是 >= BOARD_SIZE，因为 board[row] 可能被加到 BOARD_SIZE）
+    if (board[row] >= BOARD_SIZE) {
+        board[row] = -1;          // 重置当前行，为下一次回溯到该行做准备
+        return SolveNQueensRecursive(board, row - 1); // 回溯上一行
+    }
+
+    // 检查当前列是否安全
+    if (IsSafe(board, row)) {
+        if (row == BOARD_SIZE - 1) {
+            return true; // 找到解
         }
-    }else {
-        //不安全
-        if(board[row] == BOARD_SIZE-1){
-            //这一行所有列都不安全，上一行**注意重置这一行**
-            return SolveNQueensRecursive(board, row-1);
-        }else {
-            //尝试下一列
-            return SolveNQueensRecursive(board, row);
-        }
+        // 当前行安全，进入下一行（下一行的 board[row+1] 需为 -1，调用前已初始化）
+        return SolveNQueensRecursive(board, row + 1);
+    } else {
+        // 当前列不安全，尝试当前行的下一列（递归调用自己，board[row] 在上次调用时已被+1）
+        return SolveNQueensRecursive(board, row);
     }
 }
 
