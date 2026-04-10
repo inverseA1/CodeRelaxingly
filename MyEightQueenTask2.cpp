@@ -29,48 +29,39 @@ void PrintBoard(int* board){
         }
         cout << endl;
     }
+    cout << "-----------------------------" << endl;
 }
 
 // 递归回溯
-bool SolveNQueensRecursive(int* board, int row, int col){
-/*
-    int row = 0;
-    int col = 0;
-
-    while(row >= 0){
-        // 尝试在当前行找到一列可以放置皇后
-        while(col < BOARD_SIZE){
-            board[row] = col;
-            if(IsSafe(board, row)){
-                break;  // 找到安全位置，停止搜索列
-            }
-            col++;  // 尝试下一列
-        }
-
-        // 如果当前行没有找到安全的位置，回溯
-        if(col >= BOARD_SIZE){
-            board[row] = -1;  // 清除当前位置
-            row--;            // 回溯到上一行
-            if(row < 0){
-                return false;  // 无解
-            }
-            col = board[row] + 1;  // 从上一行的下一列继续
-            board[row] = -1;        // 清除上一行的记录，准备尝试新位置
-        }
-        // 检查是否找到完整解
-        else if(row == BOARD_SIZE - 1){
-            return true;  // 找到解
-        }
-        // 准备搜索下一行
-        else{
-            row++;
-            col = 0;
-        }
+bool SolveNQueensRecursive(int* board, int row){
+    //调用到这一行了，如果这行还没放皇后，就要从第一列开始尝试，也就是从-1到0，如果放了，说明这里皇后位置不对，也要+1
+    if(board[row] == BOARD_SIZE-1){
+        //这一行由于之前行不正确而不能再放了，尝试之前行，凡是尝试之前行，都要重置这一行
+        board[row] = -1;
+        return SolveNQueensRecursive(board, row-1);
+    }else{
+        board[row]++;//这一行能放，就放
     }
 
-    return false;
-*/
-    
+    //检查皇后放在改行该列是否安全
+    if(IsSafe(board, row)){
+        //安全
+        if(row == BOARD_SIZE-1){
+            return true;//最后一行，求解完成，退出
+        }else {
+            //下一行
+            return SolveNQueensRecursive(board, row +1);
+        }
+    }else {
+        //不安全
+        if(board[row] == BOARD_SIZE-1){
+            //这一行所有列都不安全，上一行**注意重置这一行**
+            return SolveNQueensRecursive(board, row-1);
+        }else {
+            //尝试下一列
+            return SolveNQueensRecursive(board, row);
+        }
+    }
 }
 
 int main(){
@@ -84,10 +75,9 @@ int main(){
     cout << "八皇后问题（枚举法，只求一个解）" << endl;
     cout << "=================================" << endl;
     cout << "找到一个解：" << endl;
-    if(SolveNQueensRecursive(board)){
+    if(SolveNQueensRecursive(board,0)){
         PrintBoard(board);
     }
-    cout << "-----------------------------" << endl;
     cout << "程序结束（已找到一个解）。" << endl;
 
     system("pause");
