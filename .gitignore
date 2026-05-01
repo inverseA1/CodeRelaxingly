@@ -27,10 +27,13 @@ obj/
 
 # MCP server configs (may contain API keys)
 .vscode/.mcp.json
+.vscode/
 
 # Claude Code settings (may contain API keys)
 .claude.json
+.claude/
 
 # User-level Claude settings (may contain API keys)
 # Uncomment if you clone this repo to another machine:
 # settings.json
+C++课程实践项目指导书—八皇后问题-学生版.pdf

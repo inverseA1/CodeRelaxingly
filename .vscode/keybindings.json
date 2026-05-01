@@ -1,7 +1,0 @@
-[
-  {
-    "key": "alt+,",
-    "command": "github.copilot.generate",
-    "when": "editorTextFocus && !editorReadonly"
-  }
-]

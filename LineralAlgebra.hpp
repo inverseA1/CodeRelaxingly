@@ -15,7 +15,7 @@ inline void PrintMat(const matrix& mat);
 inline std::vector<double> PlusVector(const std::vector<double>& vec1, const std::vector<double>& vec2);
 inline std::vector<double> TimesVector(const std::vector<double>& vec, double num);
 inline std::vector<double> MinusVector(const std::vector<double>& vec1, const std::vector<double>& vec2);
-inline double PointTimes(const std::vector<double>& vec1, const std::vector<double>& vec2);
+inline double DotProduct(const std::vector<double>& vec1, const std::vector<double>& vec2);
 
 inline matrix DefMatrix(int row, int col);
 inline int GetCol(const matrix& mat);
@@ -29,7 +29,7 @@ inline matrix TimesMatrix(const matrix& mat, double num);
 inline matrix MatrixTimesMatrix(const matrix& mat1, const matrix& mat2);
 inline std::vector<double> MatrixTimesVector(const matrix& mat, const std::vector<double>& vec);
 
-//---print functions---
+//print functions---------------------------------------------------------------------------------------
 //print vector
 //vector is implemented as std::vector<double>, default is column vector
 inline void PrintVec(const std::vector<double>& vec){
@@ -49,7 +49,7 @@ inline void PrintMat(const matrix& mat){
     }
 }
 
-//---vector operations---
+//vector operations---------------------------------------------------------------------------------------
 //vector addition
 inline std::vector<double> PlusVector(const std::vector<double>& vec1, const std::vector<double>& vec2){
     int len = vec1.size();
@@ -76,7 +76,7 @@ inline std::vector<double> MinusVector(const std::vector<double>& vec1, const st
 }
 
 //vector dot product
-inline double PointTimes(const std::vector<double>& vec1, const std::vector<double>& vec2){
+inline double DotProduct(const std::vector<double>& vec1, const std::vector<double>& vec2){
     int len = vec1.size();
     if(len == vec2.size()){
         double VecTimes = 0;
@@ -85,11 +85,18 @@ inline double PointTimes(const std::vector<double>& vec1, const std::vector<doub
         }
         return VecTimes;
     }else{
-        throw std::runtime_error("PointTimes::error::Length Mismatch.");
+        throw std::runtime_error("DotProduct::error::Length Mismatch.");
     }
 }
 
-//---matrix operations---
+//Get Length of Vector
+inline double LenVec(std::vector<double> vec){
+    return DotProduct(vec, vec);
+}
+
+
+
+//matrix operations-----------------------------------------------------------------------------------------
 //create matrix with given rows and columns
 inline matrix DefMatrix(int row, int col){
     matrix mat(row, std::vector<double>(col));
@@ -191,7 +198,7 @@ inline matrix MatrixTimesMatrix(const matrix& mat1, const matrix& mat2){
         matrix mat_ = DefMatrix(row1, col2);
         for(int i = 0 ; i < row1 ; i++){
             for(int j = 0 ; j < col2 ; j++){
-                mat_[i][j] = PointTimes(mat1[i], GetColVector(mat2,j));
+                mat_[i][j] = DotProduct(mat1[i], GetColVector(mat2,j));
             }
         }
         return mat_;
@@ -204,6 +211,89 @@ inline matrix MatrixTimesMatrix(const matrix& mat1, const matrix& mat2){
 inline std::vector<double> MatrixTimesVector(const matrix& mat, const std::vector<double>& vec){
     matrix vecmat = VecToMatrix(vec);
     return MatrixToVec(MatrixTimesMatrix(mat,vecmat));
+}
+
+//Elementary Row Operations
+//Row Swapping, row$ = 0, 1, 2, ...
+inline void RowSwap(matrix& mat,int row1, int row2){
+    int row = GetRow(mat);
+    if(row1 < row && row2 < row){
+        std::vector<double> tmp = mat[row2];
+        mat[row2] = mat[row1];
+        mat[row1] = tmp;
+    }else{
+        throw std::runtime_error("RowSwap::error::Invalid line count");
+    }
+}
+//The original matrix remains unchanged
+inline matrix RowSwapNew(const matrix mat,int row1, int row2){
+    int row = GetRow(mat);
+    if(row1 < row && row2 < row){
+        matrix mat_ = mat;
+        std::vector<double> tmp = mat_[row2];
+        mat_[row2] = mat_[row1];
+        mat_[row1] = tmp;
+        return mat_;
+    }else{
+        throw std::runtime_error("RowSwapNew::error::Invalid row count");
+    }
+}
+
+//Duplicate a row
+inline void Duplicatrow(matrix& mat, int row, double num){
+    if(row < GetRow(mat)){
+        mat[row] = TimesVector(mat[row], num);
+    }else{
+        throw std::runtime_error("Duplicatrow::error::Invalid row count");
+    }
+}
+//The original matrix remains unchanged
+inline matrix DuplicatrowNew(const matrix mat, int row, double num){
+    if(row < GetRow(mat)){
+        matrix mat_ = mat;
+        mat_[row] = TimesVector(mat_[row], num);
+        return mat_;
+    }else{
+        throw std::runtime_error("DuplicatrowNew::error::Invalid row count");
+    }
+}
+
+//Adding a multiple of one row to another row
+inline void AddMultiRow(matrix& mat, int row1, int row2, double num){
+    int row = GetRow(mat);
+    if(row1 < row && row2 < row){
+        mat[row1] = PlusVector(mat[row1], TimesVector(mat[row2], num));
+    }else{
+        throw std::runtime_error("AddMultiRow::error::Invalid row count");
+    }
+}
+//The original matrix remains unchanged
+inline matrix AddMultiRowNew(const matrix mat, int row1, int row2, double num){
+    int row = GetRow(mat);
+    if(row1 < row && row2 < row){
+        matrix mat_ = mat;
+        mat_[row1] = PlusVector(mat_[row1], TimesVector(mat_[row2], num));
+        return mat_;
+    }else{
+        throw std::runtime_error("AddMultiRow::error::Invalid row count");
+    }
+}
+
+//TODO
+//Find the determinant
+inline double Determinat(const matrix mat){
+    if(GetRow(mat) == GetCol(mat)){
+
+    }else{
+        throw std::runtime_error("Determinat::error::Input must be a square matrix.");
+    }
+}
+
+
+//TODO
+//Find the inverse of the matrix
+inline matrix Inversemat(const matrix mat){
+
 }
 
 #endif
