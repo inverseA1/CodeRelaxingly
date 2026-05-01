@@ -1,18 +1,20 @@
 /**
- * Task 5: Graphic Interface Based Solution Output
+ * Task 5: 图形界面八皇后问题求解器
  * Eight Queens Problem Solver (EasyX Graphic Version)
  *
  * Features:
  * - EasyX graphic library for visualization
  * - Recursive backtracking algorithm
- * - Animation showing search and backtracking process
+ * - Direct display of solutions (no search animation)
  * - Menu-driven interface
  */
 
 #include <iostream>
+#include <vector>
 #include <graphics.h>
 #include <conio.h>
 #include <windows.h>
+#include <limits>
 using namespace std;
 
 // ==================== Constants ====================
@@ -28,11 +30,11 @@ class EightQueensSolver {
 private:
     int board[BOARD_SIZE];           // Row -> Column, -1 means empty
     int solutionCount;               // Solution counter
-    bool foundOneSolution;           // Mode flag: find one or all
+    vector<vector<int>> allSolutions; // Store all solutions
     HWND hwnd;                      // EasyX window handle
 
 public:
-    EightQueensSolver() {
+    EightQueensSolver() : solutionCount(0), hwnd(NULL) {
         resetState();
     }
 
@@ -42,7 +44,7 @@ public:
             board[i] = -1;
         }
         solutionCount = 0;
-        foundOneSolution = false;
+        allSolutions.clear();
     }
 
     // Check if position (row, col) is safe
@@ -51,9 +53,9 @@ public:
             int qCol = board[i];
             // Same column
             if (qCol == col) return false;
-            // Main diagonal (row - col == row - col)
+            // Main diagonal
             if (row - i == col - qCol) return false;
-            // Anti-diagonal (row + col == row + col)
+            // Anti-diagonal
             if (row + col == i + qCol) return false;
         }
         return true;
@@ -70,7 +72,7 @@ public:
     }
 
     // Draw the chessboard
-    void drawBoard(int currentRow = -1, int currentCol = -1) {
+    void drawBoard() {
         // Draw background
         setbkcolor(RGB(240, 240, 240));
         cleardevice();
@@ -89,14 +91,6 @@ public:
                 }
                 fillrectangle(x, y, x + CELL_SIZE, y + CELL_SIZE);
             }
-        }
-
-        // Highlight current trying position
-        if (currentRow >= 0 && currentCol >= 0 && board[currentRow] == -1) {
-            setfillcolor(RGB(255, 255, 0));  // Yellow highlight
-            int x = WINDOW_MARGIN + currentCol * CELL_SIZE;
-            int y = WINDOW_MARGIN + currentRow * CELL_SIZE;
-            fillrectangle(x, y, x + CELL_SIZE, y + CELL_SIZE);
         }
 
         // Draw queens
@@ -128,112 +122,100 @@ public:
     // Draw solution number
     void drawSolutionNumber(int num) {
         char text[64];
-        sprintf(text, "第 %d 个解", num);
+        sprintf(text, "%d", num);
+        char prefix[32] = "Solution #";
 
         settextstyle(20, 0, _T("Arial"));
         setbkcolor(RGB(240, 240, 240));
         setcolor(RGB(0, 0, 0));
-        outtextxy(WINDOW_MARGIN, 5, text);
+
+        outtextxy(WINDOW_MARGIN, 5, prefix);
+        outtextxy(WINDOW_MARGIN + 100, 5, text);
     }
 
-    // Solve one solution with animation
-    bool solveOneWithAnimation(HWND hwnd) {
-        this->hwnd = hwnd;
-        foundOneSolution = true;
+    // Solve one solution and display
+    bool solveOneAndShow() {
         resetState();
-        return solveRecursiveAnimation(0);
+        bool found = solveRecursiveOne(0);
+        if (found) {
+            drawBoard();
+            drawSolutionNumber(1);
+        }
+        return found;
     }
 
-    // Solve all solutions with animation
-    int solveAllWithAnimation(HWND hwnd) {
-        this->hwnd = hwnd;
-        foundOneSolution = false;
+    // Solve all solutions and display (1 second per solution)
+    int solveAllAndShow() {
         resetState();
-        solveRecursiveAllAnimation(0);
+        collectAllSolutions(0);
+
+        // Display each solution for 1 second
+        for (size_t i = 0; i < allSolutions.size(); i++) {
+            // Copy solution to board
+            for (int row = 0; row < BOARD_SIZE; row++) {
+                board[row] = allSolutions[i][row];
+            }
+            drawBoard();
+            drawSolutionNumber(i + 1);
+            if (i < allSolutions.size() - 1) {
+                Sleep(1000);
+                flushmessage();
+            }
+        }
+        return allSolutions.size();
+    }
+
+    // Get current board state
+    int* getBoard() {
+        return board;
+    }
+
+    // Get solution count
+    int getSolutionCount() const {
         return solutionCount;
     }
 
 private:
-    // Recursive solve with animation (find one)
-    bool solveRecursiveAnimation(int row) {
+    // Recursive solve (find one)
+    bool solveRecursiveOne(int row) {
         if (row == BOARD_SIZE) {
-            // Found a solution
             solutionCount++;
-            drawBoard();
-            drawSolutionNumber(solutionCount);
-            Sleep(2000);  // Show for 2 seconds
             return true;
         }
 
         for (int col = 0; col < BOARD_SIZE; col++) {
-            // Highlight current trying position
-            drawBoard(row, col);
-            drawSolutionNumber(0);
-            Sleep(100);  // Animation delay
-            flushmessage();
-
             if (isSafe(row, col)) {
                 place(row, col);
-                drawBoard();
-                drawSolutionNumber(solutionCount + 1);
-                Sleep(100);
-                flushmessage();
 
-                if (solveRecursiveAnimation(row + 1)) {
+                if (solveRecursiveOne(row + 1)) {
                     return true;
                 }
 
-                // Backtrack
                 remove(row, col);
-                drawBoard();
-                drawSolutionNumber(0);
-                Sleep(100);
-                flushmessage();
             }
         }
         return false;
     }
 
-    // Recursive solve with animation (find all)
-    void solveRecursiveAllAnimation(int row) {
+    // Recursive solve (collect all solutions)
+    void collectAllSolutions(int row) {
         if (row == BOARD_SIZE) {
+            vector<int> sol;
+            for (int i = 0; i < BOARD_SIZE; i++) {
+                sol.push_back(board[i]);
+            }
+            allSolutions.push_back(sol);
             solutionCount++;
-            drawBoard();
-            drawSolutionNumber(solutionCount);
-            Sleep(1000);  // Show each solution for 1 second
             return;
         }
 
         for (int col = 0; col < BOARD_SIZE; col++) {
-            // Highlight current trying position
-            drawBoard(row, col);
-            drawSolutionNumber(solutionCount + 1);
-            Sleep(50);  // Shorter delay for searching
-            flushmessage();
-
             if (isSafe(row, col)) {
                 place(row, col);
-                drawBoard();
-                drawSolutionNumber(solutionCount + 1);
-                Sleep(50);
-                flushmessage();
-
-                solveRecursiveAllAnimation(row + 1);
-
-                // Backtrack
+                collectAllSolutions(row + 1);
                 remove(row, col);
-                drawBoard();
-                drawSolutionNumber(solutionCount + 1);
-                Sleep(50);
-                flushmessage();
             }
         }
-    }
-
-public:
-    // Get solution count
-    int getSolutionCount() const {
-        return solutionCount;
     }
 };
 
@@ -255,42 +237,42 @@ public:
         cout << "======================================" << endl;
         cout << "       " << title << endl;
         cout << "======================================" << endl;
-        cout << "       1. Auto find one solution" << endl;
-        cout << "       2. Auto find all solutions" << endl;
-        cout << "       3. Manual solving (N/A)" << endl;
-        cout << "       0. Exit" << endl;
+        cout << "       1. 自动查找一个解" << endl;
+        cout << "       2. 自动查找所有解" << endl;
+        cout << "       3. 手动求解（暂未实现）" << endl;
+        cout << "       0. 退出" << endl;
         cout << "======================================" << endl;
     }
 
     // Get user choice with validation
     int getChoice() {
         int choice;
-        cout << "Enter your choice (0-3): ";
+        cout << "请输入您的选择 (0-3): ";
 
         // First check: non-numeric input
         if (!(cin >> choice)) {
             cin.clear();
-            cin.ignore(numeric_limits<streamsize>::max(), '\n');
-            cout << "Input error! Please enter a number 0-3!" << endl;
-            cout << "Press any key to continue..." << endl;
+            cin.ignore((std::numeric_limits<std::streamsize>::max)(), '\n');
+            cout << "输入错误！请输入 0-3 的数字！" << endl;
+            cout << "按任意键继续..." << endl;
             _getch();
             return -1;
         }
 
         // Second check: out of range
         if (choice < 0 || choice > 3) {
-            cin.ignore(numeric_limits<streamsize>::max(), '\n');
-            cout << "Input error! Please choose options between 0-3!" << endl;
-            cout << "Press any key to continue..." << endl;
+            cin.ignore((std::numeric_limits<std::streamsize>::max)(), '\n');
+            cout << "输入错误！请选择 0-3 之间的选项！" << endl;
+            cout << "按任意键继续..." << endl;
             _getch();
             return -1;
         }
 
-        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        cin.ignore((std::numeric_limits<std::streamsize>::max)(), '\n');
         return choice;
     }
 
-    void pause(const string& msg = "Press any key to continue...") {
+    void pause(const string& msg = "按任意键继续...") {
         cout << msg << endl;
         _getch();
     }
@@ -299,7 +281,7 @@ public:
 // ==================== Main Program ====================
 int main() {
     EightQueensSolver solver;
-    QueenMenu menu("Eight Queens Solver System");
+    QueenMenu menu("八皇后求解器系统");
 
     bool running = true;
     while (running) {
@@ -312,60 +294,55 @@ int main() {
 
         switch (choice) {
             case 1: {
-                cout << endl << "Finding one solution..." << endl;
-                cout << "Graphic window will open soon!" << endl;
+                cout << endl << "正在查找一个解..." << endl;
+                cout << "图形窗口即将打开！" << endl;
 
                 initgraph(WINDOW_WIDTH, WINDOW_HEIGHT);
-                HWND hwnd = GetHWnd();
-                SetWindowText(hwnd, "Eight Queens Solver");
+                SetWindowText(GetHWnd(), "八皇后求解器");
 
-                bool found = solver.solveOneWithAnimation(hwnd);
+                bool found = solver.solveOneAndShow();
 
                 if (found) {
-                    cout << "Solution found! Displaying..." << endl;
+                    cout << "找到解！正在显示..." << endl;
                 }
 
-                cout << "Press any key to close graphic window..." << endl;
+                cout << "按任意键关闭图形窗口..." << endl;
                 _getch();
                 closegraph();
 
-                cout << "Solution #1:" << endl;
-                // Print to console as well
-                int board[8];
-                // We don't have direct access to board, so just show completion
-                cout << "(Solution shown in graphic window)" << endl;
+                cout << "第1个解:" << endl;
+                cout << "(解已在图形窗口中显示)" << endl;
                 break;
             }
 
             case 2: {
-                cout << endl << "Finding all solutions..." << endl;
-                cout << "Graphic window will open! (Switch every 1 second)" << endl;
+                cout << endl << "正在查找所有解..." << endl;
+                cout << "图形窗口已打开！（每1秒切换一次）" << endl;
 
                 initgraph(WINDOW_WIDTH, WINDOW_HEIGHT);
-                HWND hwnd = GetHWnd();
-                SetWindowText(hwnd, "Eight Queens Solver");
+                SetWindowText(GetHWnd(), "八皇后求解器");
 
-                int count = solver.solveAllWithAnimation(hwnd);
+                int count = solver.solveAllAndShow();
 
-                cout << "Press any key to close graphic window..." << endl;
+                cout << "按任意键关闭图形窗口..." << endl;
                 _getch();
                 closegraph();
 
-                cout << "Total solutions found: " << count << endl;
-                cout << "(All " << count << " solutions shown in graphic window)" << endl;
+                cout << "共找到解的数量: " << count << endl;
+                cout << "(" << count << " 个解已在图形窗口中显示)" << endl;
                 break;
             }
 
             case 3: {
-                cout << endl << "Sorry, manual solving is not implemented." << endl;
+                cout << endl << "抱歉，手动求解功能暂未实现。" << endl;
                 menu.pause();
                 break;
             }
 
             case 0: {
                 running = false;
-                cout << endl << "Thank you for using Eight Queens Solver!" << endl;
-                cout << "Goodbye!" << endl;
+                cout << endl << "感谢使用八皇后求解器！" << endl;
+                cout << "再见！" << endl;
                 break;
             }
         }

@@ -9,12 +9,12 @@ int main() {
     // 尝试包含 graphics.h
     #ifdef __has_include
         #if __has_include(<graphics.h>)
-            std::cout << "graphics.h found!" << std::endl;
+            std::cout << "graphics.h found!找到了！" << std::endl;
         #else
             std::cout << "graphics.h NOT found!" << std::endl;
         #endif
         #if __has_include(<iostream>)
-            std::cout << "iostream found!" << std::endl;
+            std::cout << "iostream found!找到了！" << std::endl;
         #else
             std::cout << "iostream NOT found!" << std::endl;
         #endif
