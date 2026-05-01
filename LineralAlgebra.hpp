@@ -1,0 +1,209 @@
+#ifndef LINERALALGEBRA_HPP
+#define LINERALALGEBRA_HPP
+
+#include <iostream>
+#include <cmath>
+#include <vector>
+#include <stdexcept>
+
+using matrix = std::vector<std::vector<double>>;
+
+//---declarations---
+inline void PrintVec(const std::vector<double>& vec);
+inline void PrintMat(const matrix& mat);
+
+inline std::vector<double> PlusVector(const std::vector<double>& vec1, const std::vector<double>& vec2);
+inline std::vector<double> TimesVector(const std::vector<double>& vec, double num);
+inline std::vector<double> MinusVector(const std::vector<double>& vec1, const std::vector<double>& vec2);
+inline double PointTimes(const std::vector<double>& vec1, const std::vector<double>& vec2);
+
+inline matrix DefMatrix(int row, int col);
+inline int GetCol(const matrix& mat);
+inline int GetRow(const matrix& mat);
+inline std::vector<double> GetColVector(const matrix& mat, int col);
+inline matrix TransposeMatrix(const matrix& mat);
+inline matrix VecToMatrix(const std::vector<double>& vec);
+inline std::vector<double> MatrixToVec(const matrix& mat);
+inline matrix PlusMatrix(const matrix& mat1, const matrix& mat2);
+inline matrix TimesMatrix(const matrix& mat, double num);
+inline matrix MatrixTimesMatrix(const matrix& mat1, const matrix& mat2);
+inline std::vector<double> MatrixTimesVector(const matrix& mat, const std::vector<double>& vec);
+
+//---print functions---
+//print vector
+//vector is implemented as std::vector<double>, default is column vector
+inline void PrintVec(const std::vector<double>& vec){
+    int len = vec.size();
+    for(int i = 0; i < len; i++){
+        std::cout<< vec[i] << " ";
+    }
+    std::cout<< std::endl;
+}
+
+//print matrix
+//matrix is implemented as std::vector<std::vector<double>>, mat[i] is the i-th row
+inline void PrintMat(const matrix& mat){
+    int row = mat.size();
+    for(int i = 0; i < row ; i++){
+        PrintVec(mat[i]);
+    }
+}
+
+//---vector operations---
+//vector addition
+inline std::vector<double> PlusVector(const std::vector<double>& vec1, const std::vector<double>& vec2){
+    int len = vec1.size();
+    std::vector<double> vec_(len,0);
+    for(int i = 0 ; i < len ; i++){
+        vec_[i] = vec1[i] + vec2[i];
+    }
+    return vec_;
+}
+
+//vector scalar multiplication
+inline std::vector<double> TimesVector(const std::vector<double>& vec, double num){
+    int len = vec.size();
+    std::vector<double> resultvec(len,0);
+    for(int i = 0 ; i < len ; i++){
+        resultvec[i] = num * vec[i];
+    }
+    return resultvec;
+}
+
+//vector subtraction
+inline std::vector<double> MinusVector(const std::vector<double>& vec1, const std::vector<double>& vec2){
+    return PlusVector(vec1, TimesVector(vec2, -1));
+}
+
+//vector dot product
+inline double PointTimes(const std::vector<double>& vec1, const std::vector<double>& vec2){
+    int len = vec1.size();
+    if(len == vec2.size()){
+        double VecTimes = 0;
+        for(int i = 0 ; i < len ; i++){
+            VecTimes += vec1[i] * vec2[i];
+        }
+        return VecTimes;
+    }else{
+        throw std::runtime_error("PointTimes::error::Length Mismatch.");
+    }
+}
+
+//---matrix operations---
+//create matrix with given rows and columns
+inline matrix DefMatrix(int row, int col){
+    matrix mat(row, std::vector<double>(col));
+    return mat;
+}
+
+//get matrix row count and column count
+//to get vector length, just use vec.size()
+inline int GetCol(const matrix& mat){
+    if(mat.empty() || mat[0].empty()) return 0;
+    return mat[0].size();
+}
+
+inline int GetRow(const matrix& mat){
+    return mat.size();
+}
+
+//get the column vector at given column index
+//to get row vector, just use mat[i]
+inline std::vector<double> GetColVector(const matrix& mat, int col){
+    int _row_ = GetRow(mat);
+    int _col_ = GetCol(mat);
+    if(col < 0 || col >= _col_){
+        throw std::runtime_error("GetColVector::error::Invalid col.");
+    }
+    std::vector<double> vec_(_row_);
+    for(int i = 0 ; i < _row_ ; i++){
+        vec_[i] = mat[i][col];
+    }
+    return vec_;
+}
+
+//matrix transpose
+inline matrix TransposeMatrix(const matrix& mat){
+    int row = GetRow(mat);
+    int col = GetCol(mat);
+    matrix mat_ = DefMatrix(col,row);
+    for(int i = 0 ; i < col ; i++){
+        for(int j = 0 ; j < row ; j++){
+            mat_[i][j] = mat[j][i];
+        }
+    }
+    return mat_;
+}
+
+//convert a column vector to an n-by-1 matrix for certain operations
+inline matrix VecToMatrix(const std::vector<double>& vec){
+    matrix mat_(1,vec);
+    return TransposeMatrix(mat_);
+}
+
+//conversely, convert an n-by-1 matrix to a vector
+inline std::vector<double> MatrixToVec(const matrix& mat){
+    int row = GetRow(mat);
+    if(GetCol(mat) == 1){
+        std::vector<double> vec_(row);
+        for(int i = 0 ; i < row ; i++){
+            vec_[i] = mat[i][0];
+        }
+        return vec_;
+    }else{
+        throw std::runtime_error("MatrixToVec::error::Invalid convert.");
+    }
+}
+
+//matrix addition
+inline matrix PlusMatrix(const matrix& mat1, const matrix& mat2){
+    int col = GetCol(mat1);
+    int row = GetRow(mat1);
+    if(col == GetCol(mat2) && row == GetRow(mat2)){
+        matrix mat3 = DefMatrix(row,col);
+        for(int i = 0 ; i < row ; i++){
+            mat3[i] = PlusVector(mat1[i],mat2[i]);
+        }
+        return mat3;
+    }else{
+        throw std::runtime_error("PlusMatrix::error::Row and Column Mismatch.");
+    }
+}
+
+//matrix scalar multiplication
+inline matrix TimesMatrix(const matrix& mat, double num){
+    int row = GetRow(mat);
+    int col = GetCol(mat);
+    matrix mat_ = DefMatrix(row, col);
+    for(int i = 0 ; i < row ; i++){
+        mat_[i] = TimesVector(mat[i],num);
+    }
+    return mat_;
+}
+
+//matrix multiplication
+inline matrix MatrixTimesMatrix(const matrix& mat1, const matrix& mat2){
+    int row1 = GetRow(mat1);
+    int col1 = GetCol(mat1);
+    int row2 = GetRow(mat2);
+    int col2 = GetCol(mat2);
+    if(col1 == row2){
+        matrix mat_ = DefMatrix(row1, col2);
+        for(int i = 0 ; i < row1 ; i++){
+            for(int j = 0 ; j < col2 ; j++){
+                mat_[i][j] = PointTimes(mat1[i], GetColVector(mat2,j));
+            }
+        }
+        return mat_;
+    }else{
+        throw std::runtime_error("MatrixTimesMatrix::error::Row and Column Mismatch.");
+    }
+}
+
+//matrix times vector
+inline std::vector<double> MatrixTimesVector(const matrix& mat, const std::vector<double>& vec){
+    matrix vecmat = VecToMatrix(vec);
+    return MatrixToVec(MatrixTimesMatrix(mat,vecmat));
+}
+
+#endif
