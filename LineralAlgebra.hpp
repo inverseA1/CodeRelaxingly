@@ -2,6 +2,7 @@
 #define LINERALALGEBRA_HPP
 
 #include <iostream>
+#include <iomanip>
 #include <cmath>
 #include <vector>
 #include <stdexcept>
@@ -46,8 +47,13 @@ inline void PrintVec(const vectr& vec){
 //matrix is implemented as std::vector<vectr>, mat[i] is the i-th row
 inline void PrintMat(const matrix& mat){
     int row = mat.size();
+    int col = GetCol(mat);
     for(int i = 0; i < row ; i++){
-        PrintVec(mat[i]);
+        for(int j = 0; j < col; j++){
+            std::cout << std::fixed << std::setprecision(3) 
+                      << std::setw(8) << mat[i][j];
+        }
+        std::cout << std::endl;
     }
 }
 
@@ -277,19 +283,29 @@ inline matrix AddMultiRowNew(const matrix mat, int row1, int row2, double num){
 //Convert to upper triangular matrix
 inline void ToUptriMat(matrix& mat){
     int row = GetRow(mat);
-    for(int i = 0 ; i < row ; i++){
+    std::cout << "row = " << row <<std::endl;
+    for(int i = 0 ; i < row-1 ; i++){
         //find main element
         vectr vec = GetColVector(mat, i);
+        vec.erase(vec.begin(), vec.begin() + i);
+        PrintVec(vec);
         //Undefined behavior occurs if there are more rows than columns
 
         //TODO
         int subscript = vecmax_sub(vec);
+        std::cout << "main element is vec[" << subscript << "]" <<std::endl;
         if(vec[subscript] == 0){
+            std::cout<< "main element too small!" << std::endl;
             continue;
         }
-        RowSwap(mat, i, subscript);
+        RowSwap(mat, i, subscript+i);
+        std::cout<< "after rowswap:" << std::endl;
+        PrintMat(mat);
         for(int j = i+1 ; j < row ; j++){
-            AddMultiRow(mat, j , i , -mat[j][i]/mat[i][i]);
+            double coefficient = mat[j][i]/mat[i][i];
+            AddMultiRow(mat, j , i , -coefficient);
+            std::cout<<"mat[" << j << "] - " << coefficient << " * mat[" << i << "]" << std::endl;
+            PrintMat(mat);
         }
     }
 }
