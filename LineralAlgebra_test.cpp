@@ -17,7 +17,7 @@ int main(){
     cout << "Plus: "; PrintVec(PlusVector(vec1, vec2));
     cout << "Minus: "; PrintVec(MinusVector(vec1, vec2));
     cout << "TimesVector(vec1, 2): "; PrintVec(TimesVector(vec1, 2));
-    cout << "PointTimes: " << PointTimes(vec1, vec2) << endl;
+    cout << "PointTimes: " << DotProduct(vec1, vec2) << endl;
 
     //---matrix basic operations test---
     cout << endl << "===== Matrix Tests =====" << endl;
