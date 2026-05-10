@@ -3,10 +3,9 @@
 #include <vector>
 #include <iomanip>
 #define ERROR 0.000000000001 // 定义误差
-#define EPSILON 0.00001
 
-inline double Func(double x){ return x * x - 2 ;}
-inline double Dfun(double x){ return 2 * x ; }
+inline double Func(double x){ return std::sin(x);}
+inline double Dfun(double x){ return std::cos(x);}
 
 inline double FindDfun(double x, double (*func)(double), double epsilon) {
     return (func(x + epsilon) - func(x - epsilon)) / 2*epsilon ;
@@ -42,7 +41,7 @@ double Leration(double error, double x){
 }
 
 double Leration_(double error, double x){
-    double x_ = x - Func(x) / FindDfun(x, Func, EPSILON) ;
+    double x_ = x - Func(x) / FindDfun(x, Func, ERROR) ;
     std::cout << "x = " << x << " & " << "x_ = " << x_ << " error = " << std::abs(x_ - x) <<std::endl;
     if(std::abs(x_ - x) <= error){
         return x_;
@@ -63,10 +62,6 @@ double LerationPoly(double error, double x,std::vector<double> coefficient){
 }
 
 int main(){
-    std::vector<double> coeff = {-10, 0, 1};
-    std::cout << std::setprecision(12);
-    //std::cout << Leration(ERROR, 1) << std::endl;
-    //std::cout << Leration_(ERROR, 1) << std::endl;
-    std::cout << LerationPoly(ERROR, 3, coeff) << std::endl;
+    std::cout << std::setprecision(12) << Leration(ERROR,3);
     return 0;
 }
