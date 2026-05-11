@@ -32,6 +32,9 @@ inline matrix TimesMatrix(const matrix& mat, double num);
 inline matrix MatrixTimesMatrix(const matrix& mat1, const matrix& mat2);
 inline vectr MatrixTimesVector(const matrix& mat, const vectr& vec);
 
+//Determine whether a floating point number is equal to 0 through tolerance
+inline bool doub_is_0(double num){return std::fabs(num) < 1e-12;}
+
 //print functions---------------------------------------------------------------------------------------
 //print vector
 //vector is implemented as vectr, default is column vector
@@ -103,11 +106,11 @@ inline double LenVec(vectr vec){
 }
 
 //Get the subscript of the maximum value in the vector
-inline int vecmax_sub(vectr vec){
+inline int vec_abs_max_sub(vectr vec){
     int script = 0;
     int n = vec.size();
     for(int i = 0 ; i < n ; i++){
-        if(vec[i] > vec[script]){
+        if(abs(vec[i]) > abs(vec[script])){
             script = i;
         }
     }
@@ -232,7 +235,7 @@ inline vectr MatrixTimesVector(const matrix& mat, const vectr& vec){
 }
 
 //Elementary Row Operations
-//Row Swapping, row$ = 0, 1, 2, ...
+//Row Swapping, row = 0, 1, 2, ...
 inline void RowSwap(matrix& mat,int row1, int row2){
     int row = GetRow(mat);
     if(row1 < row && row2 < row){
@@ -280,53 +283,128 @@ inline matrix AddMultiRowNew(const matrix mat, int row1, int row2, double num){
 }
 
 //Matrix factorization
-//Convert to upper triangular matrix
+//Convert to upper triangular matrix(Seriously, row echelon matrix)
 inline void ToUptriMat(matrix& mat){
     int row = GetRow(mat);
-    std::cout << "row = " << row <<std::endl;
-    for(int i = 0 ; i < row-1 ; i++){
-        //find main element
-        vectr vec = GetColVector(mat, i);
-        vec.erase(vec.begin(), vec.begin() + i);
-        PrintVec(vec);
-        //Undefined behavior occurs if there are more rows than columns
+    int col = GetCol(mat);
+    int pivot_row = 0;                     // 当前主元行
 
-        //TODO
-        int subscript = vecmax_sub(vec);
-        std::cout << "main element is vec[" << subscript << "]" <<std::endl;
-        if(vec[subscript] == 0){
-            std::cout<< "main element too small!" << std::endl;
+    for (int j = 0; j < col && pivot_row < row; ++j) {
+        // 从 pivot_row 往下提取第 j 列
+        vectr vec(row - pivot_row);
+        for (int i = pivot_row; i < row; ++i)
+            vec[i - pivot_row] = mat[i][j];
+
+        int sub = vec_abs_max_sub(vec);    // 相对 pivot_row 的偏移
+        if (doub_is_0(vec[sub])){ // 该列在 pivot_row 以下全零，直接检查下一列
             continue;
         }
-        RowSwap(mat, i, subscript+i);
-        std::cout<< "after rowswap:" << std::endl;
-        PrintMat(mat);
-        for(int j = i+1 ; j < row ; j++){
-            double coefficient = mat[j][i]/mat[i][i];
-            AddMultiRow(mat, j , i , -coefficient);
-            std::cout<<"mat[" << j << "] - " << coefficient << " * mat[" << i << "]" << std::endl;
-            PrintMat(mat);
+        RowSwap(mat, pivot_row, pivot_row + sub);
+
+        // 用当前主元消去下方所有行
+        for (int i = pivot_row + 1; i < row; ++i) {
+            double coeff = mat[i][j] / mat[pivot_row][j];
+            AddMultiRow(mat, i, pivot_row, -coeff);
         }
+        ++pivot_row;                       // 只有完成一列消元，主元行才下移
     }
 }
 //The original matrix remains unchanged
+inline matrix ToUptriMatNew(const matrix mat){
+    matrix mat_ = mat;
+    ToUptriMat(mat_);
+    return mat_;
+}
+//Get the number of row swaps
+//TODO:This function still deserves optimization, because the square matrix does not need to consider the extreme situations of many rows and columns.
+inline matrix ToUptriMatNew(const matrix mat,int& swap){
+    matrix mat_ = mat;
+    int row = GetRow(mat_);
+    int col = GetCol(mat_);
+    int pivot_row = 0;                     // 当前主元行
+    swap = 1;
+    for (int j = 0; j < col && pivot_row < row; ++j) {
+        // 从 pivot_row 往下提取第 j 列
+        vectr vec(row - pivot_row);
+        for (int i = pivot_row; i < row; ++i)
+            vec[i - pivot_row] = mat_[i][j];
 
+        int sub = vec_abs_max_sub(vec);    // 相对 pivot_row 的偏移
+        if (doub_is_0(vec[sub])){   // 该列在 pivot_row 以下全零，直接检查下一列
+            continue;
+        }
+        if(sub != 0){
+            RowSwap(mat_, pivot_row, pivot_row + sub);
+            swap = -swap;            
+        }
+        // 用当前主元消去下方所有行
+        for (int i = pivot_row + 1; i < row; ++i) {
+            double coeff = mat_[i][j] / mat_[pivot_row][j];
+            AddMultiRow(mat_, i, pivot_row, -coeff);
+        }
+        ++pivot_row;                       // 只有完成一列消元，主元行才下移
+    }
+    return mat_;
+}
 
-//TODO
 //Find the determinant
 inline double Determinat(const matrix mat){
-    if(GetRow(mat) == GetCol(mat)){
-
+    int n = GetRow(mat);
+    if(n == GetCol(mat)){
+        int swap = 1;
+        matrix mat_ = ToUptriMatNew(mat, swap);
+        double det = swap;
+        for(int i = 0 ; i < n ; i++){
+            double elem = mat_[i][i];
+            if(doub_is_0(elem)){
+                return 0;
+            }else{
+                det *= elem;
+            }
+        }
+        return det;
     }else{
         throw std::runtime_error("Determinat::error::Input must be a square matrix.");
     }
 }
 
+//Obtain the algebraic cofactor of a matrix
+inline double al_cofactor(const matrix det, int i, int j){
+    int n = GetRow(det);
+    if(n != GetCol(det)){
+        throw std::runtime_error("al_cofactor::error::Input must be a square matrix.");
+    }
+    if(i > n-1 || j > n-1){
+        throw std::runtime_error("Determinat::error::i, j must be less than n");
+    }
+    matrix det_ = det;
+    det_.erase(det_.begin()+i);
+    for(int k = 0 ; k < n-1 ; k++){
+        det_[k].erase(det_[k].begin()+j);
+    }
+    //Get the cofactor matrix
+    double cofact = Determinat(det_);
+    if((i+j) % 2 == 0){
+        return cofact;
+    }else{
+        return -cofact;
+    }
+}
 
 //TODO
 //Find the inverse of the matrix
-inline matrix Inversemat(const matrix mat){
 
+//adjoint matrix method
+inline matrix Inversemat_adjoint(const matrix mat){
+    int n = GetRow(mat);
+    if(n == GetCol(mat)){
+        throw std::runtime_error("Inversemat_adjoint::error::Input must be a square matrix.");
+    }
+    double det = Determinat(mat);
+    if(doub_is_0(det)){
+        //TODO
+    }
+    //TODO
 }
 
 #endif
