@@ -245,7 +245,7 @@ inline void RowSwap(matrix& mat,int row1, int row2){
     }
 }
 //The original matrix remains unchanged
-inline matrix RowSwapNew(const matrix mat,int row1, int row2){
+inline matrix RowSwapNew(const matrix&  mat,int row1, int row2){
         matrix mat_ = mat;
         RowSwap(mat_,row1,row2);
         return mat_;
@@ -260,7 +260,7 @@ inline void Duplicatrow(matrix& mat, int row, double num){
     }
 }
 //The original matrix remains unchanged
-inline matrix DuplicatrowNew(const matrix mat, int row, double num){
+inline matrix DuplicatrowNew(const matrix&  mat, int row, double num){
         matrix mat_ = mat;
         Duplicatrow(mat_, row, num);
         return mat_;
@@ -276,7 +276,7 @@ inline void AddMultiRow(matrix& mat, int row1, int row2, double num){
     }
 }
 //The original matrix remains unchanged
-inline matrix AddMultiRowNew(const matrix mat, int row1, int row2, double num){
+inline matrix AddMultiRowNew(const matrix& mat, int row1, int row2, double num){
         matrix mat_ = mat;
         AddMultiRow(mat_,row1,row2,num);
         return mat_;
@@ -310,14 +310,14 @@ inline void ToUptriMat(matrix& mat){
     }
 }
 //The original matrix remains unchanged
-inline matrix ToUptriMatNew(const matrix mat){
+inline matrix ToUptriMatNew(const matrix& mat){
     matrix mat_ = mat;
     ToUptriMat(mat_);
     return mat_;
 }
 //Get the number of row swaps
 //TODO:This function still deserves optimization, because the square matrix does not need to consider the extreme situations of many rows and columns.
-inline matrix ToUptriMatNew(const matrix mat,int& swap){
+inline matrix ToUptriMatNew(const matrix& mat,int& swap){
     matrix mat_ = mat;
     int row = GetRow(mat_);
     int col = GetCol(mat_);
@@ -347,8 +347,24 @@ inline matrix ToUptriMatNew(const matrix mat,int& swap){
     return mat_;
 }
 
+//Obtain diagonal matrix, based on triangular matrix
+//TODO:There is still room for optimization in this function
+inline void ToDiagMat(matrix& mat){
+    ToUptriMat(mat);
+    int row = GetRow(mat);
+    int col = GetCol(mat);
+    for(int i = row - 1; i >= 0; --i){
+        // 跳过主元为零的行（全零行或奇异情况）
+        if(doub_is_0(mat[i][i])) continue;
+        for(int j = i - 1; j >= 0; --j){
+            double coeff = mat[j][i] / mat[i][i];
+            AddMultiRow(mat, j, i, -coeff);
+        }
+    }
+}
+
 //Find the determinant
-inline double Determinat(const matrix mat){
+inline double Determinat(const matrix&  mat){
     int n = GetRow(mat);
     if(n == GetCol(mat)){
         int swap = 1;
@@ -369,7 +385,7 @@ inline double Determinat(const matrix mat){
 }
 
 //Obtain the algebraic cofactor of a matrix
-inline double al_cofactor(const matrix det, int i, int j){
+inline double al_cofactor(const matrix&  det, int i, int j){
     int n = GetRow(det);
     if(n != GetCol(det)){
         throw std::runtime_error("al_cofactor::error::Input must be a square matrix.");
@@ -394,17 +410,55 @@ inline double al_cofactor(const matrix det, int i, int j){
 //TODO
 //Find the inverse of the matrix
 
+//Determine whether the matrix is ​​invertible
+
+inline bool Is_Inversable(const matrix&  mat){return !(doub_is_0(Determinat(mat)));}
+
 //adjoint matrix method
-inline matrix Inversemat_adjoint(const matrix mat){
-    int n = GetRow(mat);
-    if(n == GetCol(mat)){
-        throw std::runtime_error("Inversemat_adjoint::error::Input must be a square matrix.");
-    }
+inline matrix InverseMat_adj(const matrix&  mat){
     double det = Determinat(mat);
     if(doub_is_0(det)){
-        //TODO
+        throw std::runtime_error("InverseMat_adjoint::error::The determinant is 0, which is irreversible.");
     }
-    //TODO
+    int n = GetRow(mat);
+
+    matrix mat_ = DefMatrix(n,n);
+    for(int i = 0 ; i < n ; i++){
+        for(int j = 0 ; j < n ; j++){
+            mat_[j][i] = al_cofactor(mat,i,j)/det;
+        }
+    }
+    return mat_;
 }
+
+//Gauss-Jordan elimination method
+inline matrix InverseMat_GJ(const matrix& mat){
+    if(!Is_Inversable(mat)){
+        throw std::runtime_error("InverseMat_GJ::error::The determinant is 0, which is irreversible.");
+    }
+    //Initialize the augmented matrix
+    int n = GetRow(mat);
+    matrix mat_ = mat;
+    for(int i = 0 ; i < n ; i++){
+        mat_[i].resize(2*n,0.0);
+        mat_[i][n+i] = 1;
+    }
+
+    ToDiagMat(mat_);
+    for(int i = 0 ; i < n ; i++){
+        mat_[i] = TimesVector(mat_[i],1/mat_[i][i]);
+    }
+
+    matrix mat__ = DefMatrix(n,n);
+    for(int i = 0; i < n ; i++){
+        for(int j = 0 ; j < n ; j++){
+            mat__[i][j] = mat_[i][n+j];
+        }
+    }
+
+    return mat__;
+}
+
+//===Eigenvalues, eigenvectors and similar diagonalization===
 
 #endif
