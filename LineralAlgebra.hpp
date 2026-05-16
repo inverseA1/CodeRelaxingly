@@ -32,6 +32,17 @@ inline matrix TimesMatrix(const matrix& mat, double num);
 inline matrix MatrixTimesMatrix(const matrix& mat1, const matrix& mat2);
 inline vectr MatrixTimesVector(const matrix& mat, const vectr& vec);
 
+inline double LenVec(vectr vec);
+inline int vec_abs_max_sub(vectr vec);
+inline void ToUptriMat(matrix& mat);
+inline matrix ToUptriMatNew(const matrix& mat);
+inline matrix ToUptriMatNew(const matrix& mat, int& swap);
+inline void ToDiagMat(matrix& mat);
+inline double Determinat(const matrix& mat);
+inline double al_cofactor(const matrix& mat, int i, int j);
+inline bool Is_Inversable(const matrix& mat);
+inline matrix InverseMat_GJ(const matrix& mat);
+
 //Determine whether a floating point number is equal to 0 through tolerance
 inline bool doub_is_0(double num){return std::fabs(num) < 1e-12;}
 
